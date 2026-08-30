@@ -3,3 +3,6 @@ obj/
 .godot/
 src/DebuffAlarm/GameDir.props
 *.user
+NewModWorkspace/
+*Workspace/
+mod_id.txt
