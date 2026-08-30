@@ -2,8 +2,8 @@
   "id": "DebuffAlarm",
   "name": "Debuff Alarm",
   "author": "elliot95",
-  "version": "0.1.0",
-  "description": "Adds a top-bar indicator that lights up whenever any player in the run (including co-op teammates) currently has Vulnerable or Weak.",
+  "version": "0.2.0",
+  "description": "Adds an indicator docked next to the energy counter in the top bar that lights up whenever any player in the run (including co-op teammates) currently has Vulnerable or Weak.",
   "has_pck": false,
   "has_dll": true,
   "affects_gameplay": false
