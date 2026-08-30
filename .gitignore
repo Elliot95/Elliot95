@@ -1,0 +1,5 @@
+bin/
+obj/
+.godot/
+src/DebuffAlarm/GameDir.props
+*.user

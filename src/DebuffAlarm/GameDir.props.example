@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Copy this file to GameDir.props (already gitignored) and fill in your path. -->
+    <Sts2GameDir>C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2</Sts2GameDir>
+  </PropertyGroup>
+</Project>

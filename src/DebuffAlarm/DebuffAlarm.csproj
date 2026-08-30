@@ -1,0 +1,47 @@
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>DebuffAlarm</RootNamespace>
+    <AssemblyName>DebuffAlarm</AssemblyName>
+
+    <!--
+      Point this at your local Slay the Spire 2 install so the project can
+      resolve the game's own assemblies (the ones docs/04-reverse-engineering-the-game.md
+      has you open in ILSpy/dnSpy). Easiest is an environment variable:
+
+        # Windows (PowerShell)
+        $env:STS2_GAME_DIR = "C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2"
+
+        # macOS / Linux
+        export STS2_GAME_DIR="$HOME/Library/Application Support/Steam/steamapps/common/Slay the Spire 2"
+
+      Or copy GameDir.props.example to GameDir.props (gitignored) and set it there.
+    -->
+    <Sts2GameDir Condition="'$(STS2_GAME_DIR)' != ''">$(STS2_GAME_DIR)</Sts2GameDir>
+  </PropertyGroup>
+
+  <Import Project="GameDir.props" Condition="Exists('GameDir.props')" />
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      NOTE: the exact assembly name/path for the game's core C# logic differs
+      by platform and has shifted across STS2 versions (see the mod-loader
+      layout notes in docs/03-mod-loading-and-manifests.md of the community
+      modding tutorial). Confirm the real filename under your
+      "$(Sts2GameDir)" install and adjust the HintPath below if needed -
+      it is usually next to the game's data_sts2_* folder or inside the
+      mods/ loader's own reference set.
+    -->
+    <Reference Include="Sts2.Core">
+      <HintPath>$(Sts2GameDir)\Sts2.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
