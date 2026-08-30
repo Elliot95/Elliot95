@@ -1,0 +1,6 @@
+{
+  "title": "Debuff Alarm",
+  "description": "Adds a top-bar indicator that lights up and pulses whenever any player in the run - including co-op teammates - currently has Vulnerable or Weak. Visual-only, doesn't touch cards or combat math.",
+  "tags": ["QoL", "UI"],
+  "visibility": "public"
+}

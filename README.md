@@ -60,11 +60,42 @@ published STS2 mod source (see Sources).
 3. Fix the `Sts2.Core.dll` filename in `DebuffAlarm.csproj` if yours differs.
 4. `dotnet build src/DebuffAlarm/DebuffAlarm.csproj -c Release`
 
-## Install
+## Install (local testing)
 
 Copy `DebuffAlarm.json` and the built `DebuffAlarm.dll` into a
 `DebuffAlarm/` folder under your game's `mods/` directory, then enable it
-from the in-game mod list.
+from the in-game mod list. **Do this and confirm it actually works in-game
+before publishing** — nothing here has been run against the real game yet.
+
+## Publish to Steam Workshop
+
+STS2 has an official uploader tool for this:
+[megacrit/sts2-mod-uploader](https://github.com/megacrit/sts2-mod-uploader).
+
+1. Download `ModUploader.exe` from that repo's releases and run it once —
+   it generates a `NewModWorkspace` folder next to itself.
+2. Rename that folder (e.g. `DebuffAlarmWorkspace`) and populate it:
+   - `content/mods/DebuffAlarm/DebuffAlarm.json` and `DebuffAlarm.dll` —
+     mirroring the same `mods/<id>/` layout used for local install, per the
+     packaging guidance in the modding tutorial's `docs/09` chapter. If the
+     uploader's own generated workspace README describes a different
+     `content/` layout, follow that instead — it's the authoritative source,
+     this is a best-effort based on the general packaging convention.
+   - `workshop.json` — metadata for the Workshop listing. This repo's
+     `src/DebuffAlarm/workshop/workshop.json` has starter values (title,
+     description, tags); the uploader generates its own copy with the real
+     expected fields on first run, so treat this repo's version as a draft
+     to copy values *from*, not a file to drop in as-is.
+   - `image.png` — preview image, must stay under 1MB. Use
+     `src/DebuffAlarm/workshop/image.png` (a generated placeholder) or swap
+     in your own.
+3. From the command line: `ModUploader.exe upload -w <workspace-folder>`.
+4. It writes a `mod_id.txt` into the workspace — keep that around, it's what
+   makes the *next* run of the same command update this Workshop item
+   instead of creating a new one.
+
+This tool appears to be Windows-only based on available guides — if you're
+on macOS/Linux you may need Wine/Proton or a Windows machine for this step.
 
 ## Sources
 
@@ -82,6 +113,8 @@ Built against the following real, public STS2 modding material:
 - [Alchyr/BaseLib-StS2](https://github.com/Alchyr/BaseLib-StS2) — a more
   mature community modding library (custom powers, UI helpers) worth
   depending on instead of raw Harmony patches if you extend this further.
+- [megacrit/sts2-mod-uploader](https://github.com/megacrit/sts2-mod-uploader) —
+  the official Steam Workshop upload tool (see "Publish to Steam Workshop").
 
 If any of the above has moved on to a newer game patch by the time you build
 this, re-check the exact method/property names against your own decompile
