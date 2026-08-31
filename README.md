@@ -12,18 +12,21 @@ installed, so it could not be compiled or run against the real game. Every
 API it calls is taken from public, real STS2 modding sources (linked below)
 rather than guessed, but STS2's mod API is unofficial/reverse-engineered and
 has shifted between patches before, so **treat this as a scaffold to build
-against your own game version, not a drop-in binary**. The two spots most
-likely to need a tweak for your exact version:
+against your own game version, not a drop-in binary**.
 
-1. **`DebuffAlarm.csproj`** — the `<Reference Include="Sts2.Core">` HintPath
-   assumes the game's C# assembly is named `Sts2.Core.dll` next to your
-   install. Confirm the real filename (open your install folder, or check
-   what your mod loader already references) and fix the path.
-2. **`AlarmIcon.cs`** — draws itself as an independent screen-space overlay
-   near the top of the screen rather than reusing the native top-bar
-   container, precisely so it doesn't depend on a HUD scene path I couldn't
-   verify. `Diameter`/`TopOffset` are eyeballed; nudge them once you see it
-   in-game to line up with the real top bar.
+The `DebuffAlarm.csproj` assembly references are now confirmed against a
+real Windows install (v0.107.1): `sts2.dll` and `0Harmony.dll` both live in
+`data_sts2_windows_x86_64\` next to the game's `.exe`. If yours differs
+(different platform, or a later version moved things), that's the one spot
+to fix.
+
+One spot still unverified either way:
+
+- **`AlarmIcon.cs`** — draws itself as an independent screen-space overlay
+  near the top of the screen rather than reusing the native top-bar
+  container, precisely so it doesn't depend on a HUD scene path I couldn't
+  verify. `Diameter`/`TopOffset` are eyeballed; nudge them once you see it
+  in-game to line up with the real top bar.
 
 Everything else — the manifest shape, the mod entry point, the `NRun._Ready`
 attach pattern, and the `CombatState`/`Creature.Powers` query — matches real,
@@ -53,12 +56,11 @@ published STS2 mod source (see Sources).
 
 1. Install the .NET 9 SDK.
 2. Point the project at your game install, either:
-   - `export STS2_GAME_DIR="/path/to/Slay the Spire 2"` (or the Windows
-     PowerShell equivalent), or
+   - PowerShell: `$env:STS2_GAME_DIR = "N:\SteamLibrary\steamapps\common\Slay the Spire 2"`
+     (adjust the drive/path to yours), or
    - copy `src/DebuffAlarm/GameDir.props.example` to
      `src/DebuffAlarm/GameDir.props` and edit the path in there.
-3. Fix the `Sts2.Core.dll` filename in `DebuffAlarm.csproj` if yours differs.
-4. `dotnet build src/DebuffAlarm/DebuffAlarm.csproj -c Release`
+3. `dotnet build src/DebuffAlarm/DebuffAlarm.csproj -c Release`
 
 ## Install (local testing)
 
