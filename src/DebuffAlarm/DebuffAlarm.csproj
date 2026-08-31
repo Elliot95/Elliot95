@@ -8,11 +8,10 @@
 
     <!--
       Point this at your local Slay the Spire 2 install so the project can
-      resolve the game's own assemblies (the ones docs/04-reverse-engineering-the-game.md
-      has you open in ILSpy/dnSpy). Easiest is an environment variable:
+      resolve the game's own assemblies. Easiest is an environment variable:
 
         # Windows (PowerShell)
-        $env:STS2_GAME_DIR = "C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2"
+        $env:STS2_GAME_DIR = "N:\SteamLibrary\steamapps\common\Slay the Spire 2"
 
         # macOS / Linux
         export STS2_GAME_DIR="$HOME/Library/Application Support/Steam/steamapps/common/Slay the Spire 2"
@@ -20,26 +19,32 @@
       Or copy GameDir.props.example to GameDir.props (gitignored) and set it there.
     -->
     <Sts2GameDir Condition="'$(STS2_GAME_DIR)' != ''">$(STS2_GAME_DIR)</Sts2GameDir>
+    <!-- Confirmed on a real Windows install (v0.107.1): the game's C# assemblies
+         live in data_sts2_windows_x86_64\, not the game root. Other platforms
+         likely use an equivalent data_sts2_<platform>_<arch> folder - adjust
+         if yours differs. -->
+    <Sts2AssembliesDir>$(Sts2GameDir)\data_sts2_windows_x86_64</Sts2AssembliesDir>
   </PropertyGroup>
 
   <Import Project="GameDir.props" Condition="Exists('GameDir.props')" />
 
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.3.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!--
-      NOTE: the exact assembly name/path for the game's core C# logic differs
-      by platform and has shifted across STS2 versions (see the mod-loader
-      layout notes in docs/03-mod-loading-and-manifests.md of the community
-      modding tutorial). Confirm the real filename under your
-      "$(Sts2GameDir)" install and adjust the HintPath below if needed -
-      it is usually next to the game's data_sts2_* folder or inside the
-      mods/ loader's own reference set.
+      Reference the game's own copies of sts2.dll and 0Harmony.dll (both
+      confirmed present in data_sts2_windows_x86_64\) rather than pulling
+      Harmony from NuGet - the game loader has already loaded its own
+      0Harmony.dll, and patching against a different build of Harmony than
+      the one already running risks type-identity/version mismatches at
+      runtime. GodotSharp is left to Godot.NET.Sdk's own reference; if that
+      turns out to mismatch the game's GodotSharp.dll (also in this folder),
+      reference that one explicitly the same way.
     -->
-    <Reference Include="Sts2.Core">
-      <HintPath>$(Sts2GameDir)\Sts2.Core.dll</HintPath>
+    <Reference Include="sts2">
+      <HintPath>$(Sts2AssembliesDir)\sts2.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(Sts2AssembliesDir)\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
